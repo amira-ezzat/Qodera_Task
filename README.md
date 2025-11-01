@@ -69,15 +69,17 @@ flutter run
 
 ✅ Unit Tests
 Test repositories and helper logic under:
-flutter test /test/unit/
+flutter test test/unit/unit_test.dar
 
 ✅ Widget Tests
 Test UI components (like product cards or search bar) under:
-flutter test /test/widget/
+flutter test test/widget/widget_test.dart
 
 ✅ Integration Tests
 Test the full app flow (API data load → UI display) under:
-flutter test /integration_test/
+flutter devices
+flutter test integration_test/app_test.dart -d device ID
+
 
 Run all tests:
 flutter test
