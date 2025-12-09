@@ -1,47 +1,50 @@
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter_task/presentation/screens/home/home_screen.dart';
-import 'presentation/screens/main_screen.dart';
-import 'logic/home/home_bloc.dart';
-import 'logic/home/home_event.dart';
-import 'data/repositories/retrofit_client.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_task/core/utils/app_fonts.dart';
+import 'package:flutter_task/presentation/page/favorite.dart';
+import 'package:flutter_task/presentation/page/home_screen.dart';
+import 'package:flutter_task/presentation/screens/home/finger_screen.dart';
+import 'package:flutter_task/presentation/screens/login/login_screen.dart';
+import 'package:flutter_task/presentation/screens/login/otp_screen.dart';
+import 'package:flutter_task/presentation/screens/splashscreen/splash_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
-  final dio = Dio();
-  final apiService = ApiService(dio);
-
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(
     DevicePreview(
       enabled: !kReleaseMode,
-      builder: (_) => MyApp(apiService: apiService),
+      builder: (_) => const MyApp(),
     ),
   );
 }
-
 class MyApp extends StatelessWidget {
-  final ApiService apiService;
-
-  const MyApp({super.key, required this.apiService});
-
+  const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => HomeBloc(apiService: apiService)
-            ..add(FetchHomeData()),
-        ),
+    return MaterialApp(
+      locale: const Locale('ar', 'EG'),
+      supportedLocales: const [
+        Locale('en', 'US'),
+        Locale('ar', 'EG'),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        useInheritedMediaQuery: true,
-        locale: DevicePreview.locale(context),
-        builder: DevicePreview.appBuilder,
-        home:  HomeScreen(),
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      theme: ThemeData(
+        fontFamily: AppFonts.appFontFamily,
       ),
+      debugShowCheckedModeBanner: false,
+      builder: DevicePreview.appBuilder,
+      home: SplashScreen(),
     );
   }
 }
